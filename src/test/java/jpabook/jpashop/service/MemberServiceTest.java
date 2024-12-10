@@ -1,8 +1,7 @@
-package jpabook.jpashop;
+package jpabook.jpashop.service;
 
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.repository.MemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,23 +15,27 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-class MemberRepositoryTest {
-    @Autowired
-    MemberRepository memberRepository;
+class MemberServiceTest {
+
+    @Autowired MemberService memberService;
+    @Autowired MemberRepository memberRepository;
 
     @Test
-    public void testMember() throws Exception {
+    public void 회원가입() throws Exception {
         //given
         Member member = new Member();
-        member.setUsername("memberA");
 
         //when
-        Long savedId = memberRepository.save(member);
-        Member findMember = memberRepository.find(savedId);
 
         //then
-        Assertions.assertThat(findMember.getId()).isEqualTo(member.getId());
-        Assertions.assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
-        Assertions.assertThat(findMember).isEqualTo(member);
+    }
+
+    @Test
+    public void 중복_회원_예외() throws Exception {
+        //given
+
+        //when
+
+        //then
     }
 }
