@@ -1,10 +1,15 @@
 package jpabook.jpashop.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderStatus;
+import jpabook.jpashop.domain.QMember;
+import jpabook.jpashop.domain.QOrder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -95,10 +100,9 @@ public class OrderRepository {
     }
 
     public List<Order> findAllByDsl(OrderSearch orderSearch) {
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-
+        JPAQueryFactory queryFactory = new JPAQueryFactory(() -> em);
         QOrder order = QOrder.order;
-        QMember member = QMember.member;
+        QMember member = QMember.member; // QMember import 필요
 
         return queryFactory
                 .selectFrom(order)
@@ -111,14 +115,13 @@ public class OrderRepository {
                 .fetch();
     }
 
-    // Helper 메서드: 주문 상태 조건
-    private Boolean orderStatusEq(OrderStatus orderStatus) {
-        return orderStatus != null ? QOrder.order.status.eq(orderStatus) : null;
+    // Helper 메서드들
+    private BooleanExpression orderStatusEq(OrderStatus status) {
+        return status != null ? QOrder.order.status.eq(status) : null;
     }
 
-    // Helper 메서드: 회원 이름 조건
-    private Boolean memberNameLike(String memberName) {
-        return StringUtils.hasText(memberName) ? QMember.member.name.containsIgnoreCase(memberName) : null;
+    private BooleanExpression memberNameLike(String name) {
+        return StringUtils.hasText(name) ? QMember.member.name.contains(name) : null;
     }
 
 }
