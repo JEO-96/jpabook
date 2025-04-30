@@ -100,6 +100,35 @@ public class OrderRepository {
         return query.getResultList();
     }
 
+    public List<Order> findAll(OrderSearch orderSearch) {
+        QOrder order = QOrder.order;
+        QMember member = QMember.member;
+        return new JPAQueryFactory(em)
+                .selectFrom(order)
+                .join(order.member, member)
+                .where(
+                        statusEq(orderSearch.getOrderStatus()),
+                        nameLike(orderSearch.getMemberName())
+                )
+                .limit(1000)
+                .fetch();
+    }
+
+    private static BooleanExpression nameLike(String memberName) {
+        if (StringUtils.hasText(memberName)) {
+            return null;
+        }
+        return QMember.member.name.like("%" + memberName + "%");
+    }
+
+    private BooleanExpression statusEq(OrderStatus statusCond) {
+        if (statusCond == null) {
+            return null;
+        } else {
+            return QOrder.order.status.eq(statusCond);
+        }
+    }
+
     public List<Order> findAllByDsl(OrderSearch orderSearch) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(() -> em);
         QOrder order = QOrder.order;

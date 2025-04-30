@@ -25,7 +25,8 @@ class OrderServiceTest {
 
     @Autowired EntityManager em;
     @Autowired OrderService orderService;
-    @Autowired OrderRepository orderRepository;
+    @Autowired
+    OrderRepository orderRepository;
 
     @Test
     public void 상품주문() throws Exception {
